@@ -1,3 +1,7 @@
+---------------------------------------------------------------------
+-- Frame-related tools and functionality
+---------------------------------------------------------------------
+
 local _, ns = ...
 local LSM = LibStub and LibStub:GetLibrary("LibSharedMedia-3.0", true)
 
