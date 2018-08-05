@@ -66,3 +66,40 @@ function ns.deep_copy(orig)
   end
   return copy
 end
+
+
+-- 
+-- Integer shortening (for easy-to-read number readouts).
+-- 
+-- Returns shortened string (ex. 1,000,000 is "1m").
+-- If "true" is passed as the second argument, the
+-- value is also returned.
+-- 
+function ns.si(value, ...)
+  if not value then return "" end
+  local absvalue = abs(value)
+  local str, val
+
+  if absvalue >= 1e10 then
+    str, val = "%.0fb", value / 1e9
+  elseif absvalue >= 1e9 then
+    str, val = "%.1fb", value / 1e9
+  elseif absvalue >= 1e7 then
+    str, val = "%.1fm", value / 1e6
+  elseif absvalue >= 1e6 then
+    str, val = "%.2fm", value / 1e6
+  elseif absvalue >= 1e5 then
+    str, val = "%.0fk", value / 1e3
+  elseif absvalue >= 1e3 then
+    str, val = "%.1fk", value / 1e3
+  else
+    str, val = "%d", value
+  end
+
+  local raw = select(1, ...)
+  if raw then
+    return str, val
+  else
+    return format(str, val)
+  end
+end
