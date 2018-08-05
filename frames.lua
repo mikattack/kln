@@ -18,16 +18,9 @@ function frames.setBackdrop(frame)
 
   local TEXTURE = LSM:Fetch(LSM.MediaType.STATUSBAR, "Flat")
   
-  -- Background
-  frame.background = frame:CreateTexture(nil, "BACKGROUND", nil, -7)
+  frame.background = frame:CreateTexture(nil, "BACKGROUND", nil, -8)
   frame.background:SetTexture(TEXTURE)
-  frame.background:SetAllPoints(frame)
+  frame.background:SetPoint("TOPLEFT", frame, "TOPLEFT", -1, 1)
+  frame.background:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 1, -1)
   frame.background:SetVertexColor(0, 0, 0, 1)
-  
-  -- Border
-  frame.border = frame:CreateTexture(nil, "BACKGROUND", nil, -8)
-  frame.border:SetTexture(TEXTURE)
-  frame.border:SetPoint("TOPLEFT", frame, "TOPLEFT", -1, 1)
-  frame.border:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 1, -1)
-  frame.border:SetVertexColor(0, 0, 0, 1)
 end
