@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------
--- Database management (aka: "SavedVariables" and "Profiles")
+-- Profile management
 ---------------------------------------------------------------------
 
 local _, ns = ...
@@ -13,7 +13,7 @@ collection of addons that depend on klnCore. It may be given
 a name that has semantic meaning to end users, but has little
 bearing on how it's treated internally.
 
-By default, when a player logs in their character has a profile
+By default when a player logs in, their character has a profile
 automatically created for it and set as the current profile.
 
 At any time, the current profile may be switched to another
@@ -26,6 +26,9 @@ new profile.
 
 A "default" profile is always present, in an attempt ensure that
 addons always have a set of fallback values for any profile.
+Be aware that this creates an edge case wherein new defaults of
+an addon will not be present in existing profiles. This is
+generally handled by a sensible configuration system.
 --]]
 
 
