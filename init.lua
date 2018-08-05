@@ -2,5 +2,6 @@
 -- Make addon available to other addons
 ---------------------------------------------------------------------
 
-local parent, ns = ...
+local _, ns = ...
 klnCore = ns
+ns.addon_name = "klnCore"
