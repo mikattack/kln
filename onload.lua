@@ -13,23 +13,15 @@ ns.onload:SetScript("OnEvent", function (self, event, addon, ...)
     self:UnregisterEvent('ADDON_LOADED')
     self:SetScript("OnEvent", nil)
 
-    -- Create persistent variables if they don't exist
-    if not _G["kln_profiles"] then _G["kln_profiles"] = {} end
-    if not _G["kln_character"] then
-      _G["kln_character"] = { profile=nil }
-    end
+    -- Session storage
+    _G.kln_profiles  = _G.kln_profiles or {}
+    _G.kln_character = _G.kln_character or {}
 
-    -- Ensure there's a default profile, even if it's empty
-    if not kln_profiles.default then
-      kln_profiles.default = {}
-    end
-
-    -- Load appropriate profile for the character
-    if not kln_character.profile then
+    -- Initialize profile management
+    ns.profiles = ns.ProfileManager:New(kln_profiles, kln_character)
+    if not ns.profiles:Current() then
       character, realm = UnitName('player')
       ns.profiles:Load(character)
-    else
-      ns.profiles:Load(kln_character.profile)
     end
 
   end

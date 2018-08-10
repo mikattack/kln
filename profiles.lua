@@ -31,28 +31,18 @@ an addon will not be present in existing profiles. This is
 generally handled by a sensible configuration system.
 --]]
 
-
---[[
-The following globals are used as saved variables to persist
-profile data between play sessions. They MUST NOT be
-referenced prior to their proper initialization in "onload".
-     kln_profiles    Collection of profiles
-     kln_character   Character-specific data
---]]
-
-local manager = ns.profiles
-local current = { name=nil, data=nil}
+---------------------------------------------------------------------
 
 -- 
 -- Ensures that the current profile has every value from the
 -- default profile. Missing values are copied.
 -- 
-local function UpdateProfileDefaults(name)
+local function UpdateProfileDefaults(mgr, name)
   -- Profiles must exist prior to calling this function.
-  if not kln_profiles[name] then return end
-  for key, value in pairs(kln_profiles["default"]) do
-    if not kln_profiles[name][key] then
-      kln_profiles[name][key] = ns.deep_copy(value)
+  if not mgr.profileDB[name] then return end
+  for key, value in pairs(mgr.profileDB["default"]) do
+    if not mgr.profileDB[name][key] then
+      mgr.profileDB[name][key] = ns.deep_copy(value)
     end
   end
 end
@@ -61,24 +51,59 @@ end
 -- 
 -- Sets the current profile.
 -- 
-local function SetCurrent(name)
+local function SetCurrent(mgr, name)
   -- Profiles must exist prior to calling this function.
-  if not kln_profiles[name] then return false end
-  current.name = name
-  current.data = kln_profiles[name]
-  kln_character.profile = name
-  UpdateProfileDefaults(name)
-  ns.events:Trigger("profile_update", name, current.data)
+  if not mgr.profileDB[name] then return false end
+  mgr.current.name = name
+  mgr.current.data = mgr.profileDB[name]
+  mgr.characterDB.profile = name
+  UpdateProfileDefaults(mgr, name)
+  ns.events:Trigger("profile_update", name, mgr.current.data)
   return true
+end
+
+-- Public API -------------------------------------------------------
+
+ns.ProfileManager = {}
+local ProfileManager = ns.ProfileManager
+
+function ProfileManager:New(profileDB, characterDB)
+  pm = {
+    current     = { name=nil, data=nil },
+    profileDB   = profileDB,
+    characterDB = characterDB,
+  }
+  setmetatable(pm, self)
+  self.__index = self
+
+  -- Attempt to load a profile stored in the characterDB
+  local profile = pm.characterDB.profile
+  if profile and pm.profileDB[profile] then
+    pm:Load(profile)
+  end
+
+  return pm
 end
 
 
 -- 
--- Returns a list of profile, sorted alphabetically.
+-- Returns the name and values of the current profile.
 -- 
-function manager:List()
+function ProfileManager:Current()
+  if self.current.name == nil then
+    return nil, nil
+  else
+    return self.current.name, self.current.data
+  end
+end
+
+
+-- 
+-- Returns a list of profiles, sorted alphabetically.
+-- 
+function ProfileManager:List()
   list = {}
-  for name, _ in pairs(kln_profiles) do
+  for name, _ in pairs(self.profileDB) do
     table.insert(list, name)
   end
   table.sort(list)
@@ -92,14 +117,14 @@ end
 -- If the requested profile does not exist, it is
 -- created from the "default" profile.
 -- 
-function manager:Load(name)
-  if name == current.name then return end
-  if not kln_profiles[name] then
+function ProfileManager:Load(name)
+  if name == self.current.name then return end
+  if not self.profileDB[name] then
     ns:print("klnCore: Cannot find profile '%s'", name)
-    kln_profiles[name] = ns.deep_copy(kln_profiles.default)
+    self.profileDB[name] = ns.deep_copy(self.profileDB.default)
     ns:print("klnCore: Created '%s' from the default profile", name)
   end
-  SetCurrent(name)
+  return SetCurrent(self, name)
 end
 
 
@@ -110,25 +135,25 @@ end
 -- 
 -- If the destination profile does not exist, it is created.
 -- 
-function manager:Copy(src, dst)
-  if not kln_profiles[src] then return end
-  kln_profiles[dst] = ns.deep_copy(kln_profiles[src])
+function ProfileManager:Copy(src, dst)
+  if not self.profileDB[src] then return end
+  self.profileDB[dst] = ns.deep_copy(self.profileDB[src])
 end
 
 
 -- 
--- Removes a global profile entirely.
+-- Removes a profile entirely from the database.
 -- 
--- The player's current profile cannot be deleted.
+-- The current profile cannot be deleted.
 -- 
 -- Returns: boolean
 -- 
-function manager:Delete(name)
-  if current.name == name then
+function ProfileManager:Delete(name)
+  if self.current.name == name then
     ns:print("klnCore: Cannot delete current profile")
     return false
   else
-    kln_profiles[name] = nil
+    self.profileDB[name] = nil
     return true
   end
 end
@@ -137,6 +162,11 @@ end
 -- 
 -- Allows an addon to register a set of defaults for itself.
 -- 
-function manager:RegisterDefaults(addon, values)
-  kln_profiles.default[addon] = values
+function ProfileManager:RegisterDefaults(addon, values)
+  -- Ensure there's a default profile, even if it's empty
+  if not self.profileDB.default then
+    self.profileDB.default = {}
+  end
+
+  self.profileDB.default[addon] = values
 end
