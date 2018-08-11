@@ -5,3 +5,4 @@
 local _, ns = ...
 klnCore = ns
 ns.addon_name = "klnCore"
+ns.lib = {}

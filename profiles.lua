@@ -64,8 +64,8 @@ end
 
 -- Public API -------------------------------------------------------
 
-ns.ProfileManager = {}
-local ProfileManager = ns.ProfileManager
+ns.lib.ProfileManager = {}
+local ProfileManager = ns.lib.ProfileManager
 
 function ProfileManager:New(profileDB, characterDB)
   pm = {

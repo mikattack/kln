@@ -17,8 +17,11 @@ ns.onload:SetScript("OnEvent", function (self, event, addon, ...)
     _G.kln_profiles  = _G.kln_profiles or {}
     _G.kln_character = _G.kln_character or {}
 
+    -- Initialize events
+    ns.events = ns.lib.EventHandler:New()
+
     -- Initialize profile management
-    ns.profiles = ns.ProfileManager:New(kln_profiles, kln_character)
+    ns.profiles = ns.lib.ProfileManager:New(kln_profiles, kln_character)
     if not ns.profiles:Current() then
       character, realm = UnitName('player')
       ns.profiles:Load(character)
