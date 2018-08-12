@@ -1,15 +1,8 @@
----------------------------------------------------------------------
--- Profile management
----------------------------------------------------------------------
-
-local _, ns = ...
-ns.profiles = {}
-
---Profile Management ------------------------------------------------
-
 --[[
+# Profile Management
+
 A "profile" is just a table whose data are settings for a
-collection of addons that depend on klnCore. It may be given
+collection of addons that depend on "kln". It may be given
 a name that has semantic meaning to end users, but has little
 bearing on how it's treated internally.
 
@@ -26,10 +19,17 @@ new profile.
 
 A "default" profile is always present, in an attempt ensure that
 addons always have a set of fallback values for any profile.
-Be aware that this creates an edge case wherein new defaults of
-an addon will not be present in existing profiles. This is
-generally handled by a sensible configuration system.
+Be aware that this creates an edge case wherein any new defaults
+will not be present in existing profiles. This is generally
+handled by the configuration system implementing logic for
+migrating profile data from prior versions.
 --]]
+
+---------------------------------------------------------------------
+
+local _, ns = ...
+local prefix = ns.prefix
+ns.profiles = {}
 
 ---------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ local function SetCurrent(mgr, name)
   return true
 end
 
--- Public API -------------------------------------------------------
+---------------------------------------------------------------------
 
 ns.lib.ProfileManager = {}
 local ProfileManager = ns.lib.ProfileManager
@@ -120,9 +120,9 @@ end
 function ProfileManager:Load(name)
   if name == self.current.name then return end
   if not self.profileDB[name] then
-    ns:print("klnCore: Cannot find profile '%s'", name)
+    ns:print("%s: Cannot find profile '%s'", prefix, name)
     self.profileDB[name] = ns.deep_copy(self.profileDB.default)
-    ns:print("klnCore: Created '%s' from the default profile", name)
+    ns:print("%s: Created '%s' from the default profile", prefix, name)
   end
   return SetCurrent(self, name)
 end
@@ -150,7 +150,7 @@ end
 -- 
 function ProfileManager:Delete(name)
   if self.current.name == name then
-    ns:print("klnCore: Cannot delete current profile")
+    ns:print("%s: Cannot delete current profile", prefix)
     return false
   else
     self.profileDB[name] = nil
