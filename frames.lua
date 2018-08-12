@@ -1,6 +1,8 @@
----------------------------------------------------------------------
--- Frame-related tools and functionality
----------------------------------------------------------------------
+--[[
+# Frames: Library of frame-related convenience functionality
+
+setBackdrop - Decorates a frame with a 1px black outline.
+--]]
 
 local _, ns = ...
 ns.frames = {}
@@ -10,7 +12,8 @@ local frames = ns.frames
 
 
 -- 
--- Decorate a Frame with a background and outline texture.
+-- Decorate a Frame with a background texture which extends out
+-- a single pixel, creating an outline.
 -- 
 function frames.setBackdrop(frame)
   if not LSM then print("LibStub failed to load") return end

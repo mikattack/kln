@@ -1,5 +1,9 @@
----------------------------------------------------------------------
--- Utility functions
+--[[
+# Utility Functions
+
+Grab bag of general-use functions useful to all addons.
+--]]
+
 ---------------------------------------------------------------------
 
 local _, ns = ...
