@@ -13,7 +13,7 @@ end)
 
 
 function Loader:ADDON_LOADED(event, addon, ...)
-  if addon ~= ns.addon_name then return end
+  if addon ~= "kln" then return end
     
   -- Session storage
   _G.kln_profiles  = _G.kln_profiles or {}

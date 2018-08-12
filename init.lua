@@ -3,6 +3,6 @@
 ---------------------------------------------------------------------
 
 local _, ns = ...
-klnCore = ns
-ns.addon_name = "klnCore"
+kln = ns
 ns.lib = {}
+ns.prefix = "|cFF7F2A90kln|r"

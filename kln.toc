@@ -1,12 +1,12 @@
 ## Interface: 80000
-## Title: |cFF7F2A90kln|r|Core
-## Notes: Core functionality used by addons from Kellen.
+## Title: |cFF7F2A90kln|r
+## Notes: Little library used by all KellenUI addons.
 ## Author: Kellen
 ## DefaultState: Enabled
 ## SavedVariables: kln_profiles
 ## SavedVariablesPerCharacter: kln_character
 ## X-Copyright: Copyright (c) 2018 Kellen.  All rights reserved.
-## X-Website: https://github.com/mikattack/klnCore
+## X-Website: https://github.com/mikattack/kln
 
 lib\LibStub.lua
 lib\CallbackHandler.lua
