@@ -28,7 +28,7 @@ function EventHandler:Register(event, fn)
   if not self[event] then
     self[event] = {}
   end
-  self[event][#events + 1] = fn
+  self[event][#self[event] + 1] = fn
 end
 
 
