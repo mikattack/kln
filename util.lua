@@ -12,8 +12,20 @@ local _, ns = ...
 -- 
 -- Solid debugger.
 -- 
-function ns:print(pattern, ...)
+function ns.print(pattern, ...)
   print(format(pattern, ...))
+end
+
+-- 
+-- Laziness.
+-- 
+function ns.dump(table)
+  local t = type(table)
+  if t ~= "table" then
+    ns.print("dump: Expected table, found '%s'", t)
+    return
+  end
+  for k,v in pairs(table) do ns.print(k, "-", v) end
 end
 
 -- 
