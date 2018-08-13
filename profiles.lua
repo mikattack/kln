@@ -76,6 +76,11 @@ function ProfileManager:New(profileDB, characterDB)
   setmetatable(pm, self)
   self.__index = self
 
+  -- Ensure there's a default profile, even if it's empty
+  if not pm.profileDB.default then
+    pm.profileDB.default = {}
+  end
+
   -- Attempt to load a profile stored in the characterDB
   local profile = pm.characterDB.profile
   if profile and pm.profileDB[profile] then
@@ -120,9 +125,9 @@ end
 function ProfileManager:Load(name)
   if name == self.current.name then return end
   if not self.profileDB[name] then
-    ns:print("%s: Cannot find profile '%s'", prefix, name)
+    ns.print("%s: Cannot find profile '%s'", prefix, name)
     self.profileDB[name] = ns.deep_copy(self.profileDB.default)
-    ns:print("%s: Created '%s' from the default profile", prefix, name)
+    ns.print("%s: Created '%s' from the default profile", prefix, name)
   end
   return SetCurrent(self, name)
 end
@@ -150,7 +155,7 @@ end
 -- 
 function ProfileManager:Delete(name)
   if self.current.name == name then
-    ns:print("%s: Cannot delete current profile", prefix)
+    ns.print("%s: Cannot delete current profile", prefix)
     return false
   else
     self.profileDB[name] = nil
@@ -163,10 +168,5 @@ end
 -- Allows an addon to register a set of defaults for itself.
 -- 
 function ProfileManager:RegisterDefaults(addon, values)
-  -- Ensure there's a default profile, even if it's empty
-  if not self.profileDB.default then
-    self.profileDB.default = {}
-  end
-
   self.profileDB.default[addon] = values
 end
